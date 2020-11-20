@@ -6,7 +6,7 @@
 
   <groupId>com.daniel-araujo.byteringbuffer</groupId>
   <artifactId>byteringbuffer</artifactId>
-  <version>1.0</version>
+  <version>1.0.0</version>
 
   <name>Byte Ring Buffer</name>
   <description>A memory-efficient ring buffer implementation for storing bytes.</description>
