@@ -1,8 +1,6 @@
 package com.daniel_araujo.byteringbuffer;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.util.Objects;
 
 /**
@@ -53,50 +51,6 @@ public final class ByteRingBuffer {
      */
     public final int sizeFree() {
         return sizeTotal() - sizeUsed();
-    }
-
-    /**
-     * Adds elements to the end of the buffer.
-     *
-     * @param shorts Array that contains elements to be added. Will attempt to add them all.
-     * @return How many elements were added.
-     */
-    public final int add(short[] shorts) {
-        Objects.requireNonNull(shorts);
-
-        return add(shorts, 0, shorts.length);
-    }
-
-    /**
-     * Adds elements to the end of the buffer.
-     *
-     * @param shorts Array that contains elements to be added.
-     * @param index Where to start copying elements from the array.
-     * @return How many elements were added.
-     */
-    public final int add(short[] shorts, int index) {
-        Objects.requireNonNull(shorts);
-
-        return add(shorts, index, shorts.length - index);
-    }
-
-    /**
-     * Adds elements to the end of the buffer.
-     *
-     * @param shorts Array that contains elements to be added.
-     * @param index Where to start copying elements from the array.
-     * @param length How many elements to copy.
-     * @return How many elements were added.
-     */
-    public final int add(short[] shorts, int index, int length) {
-        // TODO: This is experimental. Memory usage needs to be improved later.
-
-        Objects.requireNonNull(shorts);
-
-        java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
-        bb.asShortBuffer().put(shorts, index, length);
-
-        return add(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
     }
 
     /**
@@ -287,51 +241,6 @@ public final class ByteRingBuffer {
     }
 
     /**
-     * Retrieves elements from the buffer and places them in a short array.
-     *
-     * @param shorts Array of shorts. Will try to fill array.
-     * @return How many elements were retrieved.
-     */
-    public final int peek(short[] shorts) {
-        Objects.requireNonNull(shorts);
-
-        return peek(shorts, 0, shorts.length);
-    }
-
-    /**
-     * Retrieves elements from the buffer and places them in a short array.
-     *
-     * @param shorts Array of shorts. Will try to fill array.
-     * @param index Index where elements will be placed.
-     * @return How many elements were retrieved.
-     */
-    public final int peek(short[] shorts, int index) {
-        Objects.requireNonNull(shorts);
-
-        return peek(shorts, index, shorts.length - index);
-    }
-
-    /**
-     * Retrieves elements from the buffer and places them in a short array.
-     *
-     * @param shorts Array of shorts.
-     * @param index Index where elements will be placed.
-     * @param length How many elements to retrieve.
-     * @return How many elements were retrieved.
-     */
-    public final int peek(short[] shorts, int index, int length) {
-        Objects.requireNonNull(shorts);
-
-        java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
-
-        int read = peek(bb.array(), bb.arrayOffset() + bb.position(), bb.limit());
-
-        bb.asShortBuffer().get(shorts, index, length);
-
-        return read / 2;
-    }
-
-    /**
      * Retrieves elements from the buffer and places them in a ByteBuffer.
      *
      * @param byteBuffer
@@ -442,6 +351,13 @@ public final class ByteRingBuffer {
     }
 
     /**
+     * Creates a view of this byte buffer that allows you to access its elements as shorts.
+     */
+    public final ShortView shortView() {
+        return new ShortView();
+    }
+
+    /**
      * Checks if its possible to access the given number of bytes without passing the end of the buffer.
      * 
      * @param size
@@ -498,6 +414,117 @@ public final class ByteRingBuffer {
             // The beginning of the ring buffer is behind us. We have everything in front of us
             // available.
             return buffer.length - offset;
+        }
+    }
+
+    public class ShortView {
+        /**
+         * Adds elements to the end of the buffer.
+         *
+         * @param shorts
+         *            Array that contains elements to be added. Will attempt to add them all.
+         * 
+         * @return How many elements were added.
+         */
+        public final int add(short[] shorts) {
+            Objects.requireNonNull(shorts);
+
+            return add(shorts, 0, shorts.length);
+        }
+
+        /**
+         * Adds elements to the end of the buffer.
+         *
+         * @param shorts
+         *            Array that contains elements to be added.
+         * @param index
+         *            Where to start copying elements from the array.
+         * 
+         * @return How many elements were added.
+         */
+        public final int add(short[] shorts, int index) {
+            Objects.requireNonNull(shorts);
+
+            return add(shorts, index, shorts.length - index);
+        }
+
+        /**
+         * Adds elements to the end of the buffer.
+         *
+         * @param shorts
+         *            Array that contains elements to be added.
+         * @param index
+         *            Where to start copying elements from the array.
+         * @param length
+         *            How many elements to copy.
+         * 
+         * @return How many elements were added.
+         */
+        public final int add(short[] shorts, int index, int length) {
+            // TODO: This is experimental. Memory usage needs to be improved later.
+
+            Objects.requireNonNull(shorts);
+
+            java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
+            bb.asShortBuffer().put(shorts, index, length);
+
+            return ByteRingBuffer.this.add(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
+        }
+
+        /**
+         * Retrieves elements from the buffer and places them in a short array.
+         *
+         * @param shorts
+         *            Array of shorts. Will try to fill array.
+         * 
+         * @return How many elements were retrieved.
+         */
+        public final int peek(short[] shorts) {
+            Objects.requireNonNull(shorts);
+
+            return peek(shorts, 0, shorts.length);
+        }
+
+        /**
+         * Retrieves elements from the buffer and places them in a short array.
+         *
+         * @param shorts
+         *            Array of shorts. Will try to fill array.
+         * @param index
+         *            Index where elements will be placed.
+         * 
+         * @return How many elements were retrieved.
+         */
+        public final int peek(short[] shorts, int index) {
+            Objects.requireNonNull(shorts);
+
+            return peek(shorts, index, shorts.length - index);
+        }
+
+        /**
+         * Retrieves elements from the buffer and places them in a short array.
+         *
+         * @param shorts
+         *            Array of shorts.
+         * @param index
+         *            Index where elements will be placed.
+         * @param length
+         *            How many elements to retrieve.
+         * 
+         * @return How many elements were retrieved.
+         */
+        public final int peek(short[] shorts, int index, int length) {
+            // TODO: This is experimental. Memory usage needs to be improved later.
+
+            Objects.requireNonNull(shorts);
+
+            java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
+
+            int read = ByteRingBuffer.this.peek(bb.array(), bb.arrayOffset() + bb.position(), bb.limit());
+
+            bb.asShortBuffer().get(shorts, index, length);
+
+            return read / 2;
         }
     }
 
