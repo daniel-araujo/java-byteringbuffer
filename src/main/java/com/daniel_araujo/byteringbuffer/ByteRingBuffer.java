@@ -25,31 +25,133 @@ public final class ByteRingBuffer {
     /**
      * Creates a ring buffer that can store up to the given number of bytes.
      *
-     * @param capacity How many bytes can be stored in the buffer.
+     * @param capacity
+     *            How many bytes can be stored in the buffer.
      */
     public ByteRingBuffer(int capacity) {
         buffer = new byte[capacity];
     }
 
-    public final int getSize() {
+    /**
+     * @return How many bytes are stored in the buffer.
+     */
+    public final int sizeUsed() {
         return size;
     }
 
-    public final void add(byte[] bytes) {
-        add(bytes, 0, bytes.length);
+    /**
+     * Adds elements to the end of the buffer.
+     *
+     * @param bytes
+     *            Adds entire array to buffer.
+     */
+    public final int add(byte[] bytes) {
+        Objects.requireNonNull(bytes);
+
+        return add(bytes, 0, bytes.length);
     }
 
-    public final void add(byte[] bytes, int index, int length) {
+    /**
+     * Adds elements to the end of the buffer.
+     *
+     * @param bytes
+     *            Array that contains elements to be added.
+     * @param index
+     *            Where to begin extracting elements.
+     */
+    public final int add(byte[] bytes, int index) {
+        Objects.requireNonNull(bytes);
+
+        return add(bytes, index, bytes.length - index);
+    }
+
+    /**
+     * Adds elements to the end of the buffer.
+     *
+     * @param bytes
+     *            Array that contains elements to be added.
+     * @param index
+     *            Where to begin extracting elements.
+     * @param length
+     *            How many elements to extract.
+     */
+    public final int add(byte[] bytes, int index, int length) {
+        Objects.requireNonNull(bytes);
+
+        int bytesRemaining = length;
+        int bytesOffset = index;
+
+        do {
+            int offset = nextOffset();
+            int available = availableAfter(offset);
+
+            if (available == 0) {
+                // Buffer is full.
+                break;
+            }
+
+            int copying = Math.min(bytesRemaining, available);
+
+            System.arraycopy(bytes, bytesOffset, buffer, offset, copying);
+
+            advance(copying);
+            bytesRemaining -= copying;
+            bytesOffset += copying;
+        } while (bytesRemaining > 0);
+
+        return length - bytesRemaining;
+    }
+
+    /**
+     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * be overwritten by the newest ones.
+     *
+     * @param bytes
+     *            Adds entire array to buffer.
+     */
+    public final void overrunAdd(byte[] bytes) {
+        Objects.requireNonNull(bytes);
+
+        overrunAdd(bytes, 0, bytes.length);
+    }
+
+    /**
+     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * be overwritten by the newest ones.
+     *
+     * @param bytes
+     *            Array that contains elements to be added.
+     * @param index
+     *            Where to begin extracting elements.
+     */
+    public final void overrunAdd(byte[] bytes, int index) {
+        Objects.requireNonNull(bytes);
+
+        overrunAdd(bytes, index, bytes.length - index);
+    }
+
+    /**
+     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * be overwritten by the newest ones.
+     *
+     * @param bytes
+     *            Array that contains elements to be added.
+     * @param index
+     *            Where to begin extracting elements.
+     * @param length
+     *            How many elements to extract.
+     */
+    public final void overrunAdd(byte[] bytes, int index, int length) {
         Objects.requireNonNull(bytes);
 
         int bytesRemaining = length;
         int bytesOffset = index;
         if (!overflows(length)) {
-            System.arraycopy(bytes, index, buffer, offset(), length);
+            System.arraycopy(bytes, index, buffer, nextOffset(), length);
             advance(length);
         } else {
             do {
-                int offset = offset();
+                int offset = nextOffset();
                 int available = buffer.length - offset;
                 int copying = Math.min(bytesRemaining, available);
                 System.arraycopy(bytes, bytesOffset, buffer, offset, copying);
@@ -60,16 +162,40 @@ public final class ByteRingBuffer {
         }
     }
 
+    /**
+     * Retrieves elements from the buffer and stores them in another array.
+     *
+     * @param bytes
+     *            Where elements will be stored. The size of the array indicates how many elements will be retrieved.
+     * 
+     * @return Number of elements that were copied.
+     */
     public final int peek(byte[] bytes) {
+        Objects.requireNonNull(bytes);
+
         return peek(bytes, 0, bytes.length);
     }
 
+    /**
+     * Retrieves elements from the buffer and stores them in another array.
+     *
+     * @param bytes
+     *            Where elements will be stored.
+     * @param index
+     *            Where to start placing elements in the given array.
+     * @param length
+     *            How many elements to copy.
+     * 
+     * @return Number of elements that were copied.
+     */
     public final int peek(byte[] bytes, int index, int length) {
+        Objects.requireNonNull(bytes);
+
         if (size == 0) {
             return 0;
         } else {
             int toRead = Math.min(length, size);
-            int offset = offset();
+            int offset = nextOffset();
             int firstHalfStart = start;
             int firstHalfSize = buffer.length - start;
             if (firstHalfSize > size) {
@@ -100,17 +226,41 @@ public final class ByteRingBuffer {
         }
     }
 
+    /**
+     * Retrieves elements from the buffer and places them in a ByteBuffer.
+     *
+     * @param byteBuffer
+     *            Destination. The remaining size of the buffer indicates how many elements to retrieved.
+     * 
+     * @return Number of elements placed into the given ByteBuffer object.
+     */
     public final int peek(ByteBuffer byteBuffer) {
         int length = byteBuffer.limit() - byteBuffer.position();
         return peek(byteBuffer, length);
     }
 
+    /**
+     * Retrieves elements from the buffer and places them in a ByteBuffer.
+     *
+     * @param byteBuffer
+     *            Destination.
+     * @param length
+     *            How many elements to retrieve.
+     * 
+     * @return Number of elements placed into the given ByteBuffer object.
+     */
     public final int peek(ByteBuffer byteBuffer, int length) {
         byte[] array = byteBuffer.array();
         int index = byteBuffer.arrayOffset() + byteBuffer.position();
         return peek(array, index, length);
     }
 
+    /**
+     * Retrieves elements from the buffer with indirect access.
+     *
+     * @param cb
+     *            The borrow method will be called at least once. It will be called if the buffer is empty.
+     */
     public final void peek(PeekCallback cb) {
         int firstHalfStart = start;
         int firstHalfSize = buffer.length - start;
@@ -128,16 +278,44 @@ public final class ByteRingBuffer {
         }
     }
 
+    /**
+     * Moves elements from the buffer to the given array.
+     * 
+     * @param bytes
+     *            The destination array. Its size determines how many elements to remove.
+     * 
+     * @return Number of elements removed. It may be less than the size of the given array if the buffer does not have
+     *         enough elements to fill the array.
+     */
     public final int pop(byte[] bytes) {
         return pop(bytes, 0, bytes.length);
     }
 
+    /**
+     * Moves elements from the buffer to the given array.
+     *
+     * @param bytes
+     *            The destination array.
+     * @param index
+     *            Where to begin placing elements in the array.
+     * @param length
+     *            How many elements to remove.
+     * 
+     * @return Number of elements removed. It may be less than the size of the provided length if the buffer does not
+     *         have enough elements to fill the array.
+     */
     public final int pop(byte[] bytes, int index, int length) {
         int read = peek(bytes, index, length);
         drop(read);
         return read;
     }
 
+    /**
+     * Removes elements from the buffer.
+     *
+     * @param elements
+     *            Number of elements to remove.
+     */
     public final void drop(int elements) {
         int toDrop = elements;
         if (elements > size) {
@@ -150,15 +328,32 @@ public final class ByteRingBuffer {
         size = newSize;
     }
 
+    /**
+     * Removes every element from the buffer. The buffer will go back to its initial state.
+     */
     public final void clear() {
         start = 0;
         size = 0;
     }
 
+    /**
+     * Checks if its possible to access the given number of bytes without passing the end of the buffer.
+     * 
+     * @param size
+     *            Number of elements.
+     * 
+     * @return
+     */
     private final boolean overflows(int size) {
-        return offset() + size > buffer.length;
+        return nextOffset() + size > buffer.length;
     }
 
+    /**
+     * Moves end position and updates size and start position. Wraps around when neeeded.
+     *
+     * @param elements
+     *            How many elements to move.
+     */
     private final void advance(int elements) {
         int sumSize = size + elements;
         int overflow = 0;
@@ -172,11 +367,46 @@ public final class ByteRingBuffer {
         start = (start + overflow) % buffer.length;
     }
 
-    private final int offset() {
+    /**
+     * @return The position from where to start placing new elements into the buffer.
+     */
+    private final int nextOffset() {
         return (start + size) % buffer.length;
     }
 
+    /**
+     * @param offset
+     *            Position in the buffer.
+     * 
+     * @return How many bytes are free after the given position up to end the of the array or the start position,
+     *         whichever comes first.
+     */
+    private final int availableAfter(int offset) {
+        if (start >= offset) {
+            if (size > 0) {
+                // The beginning of the ring buffer is in front of us.
+                return offset - start;
+            } else {
+                return buffer.length - offset;
+            }
+        } else {
+            // The beginning of the ring buffer is behind us. We have everything in front of us
+            // available.
+            return buffer.length - offset;
+        }
+    }
+
+    /**
+     * For efficient access to elements in the buffer.
+     */
     public interface PeekCallback {
+        /**
+         * Receives a chunk of elements. This method can be called several times. You are not allowed to modify the
+         * buffer.
+         * 
+         * @param chunk
+         *            A chunk of elements. You can only use this object while the method is running.
+         */
         void borrow(ByteBuffer chunk);
     }
 }
