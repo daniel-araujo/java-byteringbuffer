@@ -32,6 +32,17 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void add_cannotAddIfThereIsOnlyOneByteLeft() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        buffer.shortView().add(new short[] { 1 });
+
+        assertEquals(3, buffer.sizeUsed());
+    }
+
+    @Test
     public final void peek_retrievesTwoBytesAsShort() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
@@ -40,6 +51,20 @@ public class ByteRingBufferShortViewTest {
         short[] result = new short[1];
         assertEquals(1, buffer.shortView().peek(result));
         assertArrayEquals(new short[] { 1 }, result);
+    }
+
+    @Test
+    public final void peek_retrievesNothingIfThereIsOneByteLeft() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1 });
+
+        short[] result = new short[1];
+        assertEquals(0, buffer.shortView().peek(result));
+
+        assertEquals("Should not write to array", 0, result[0]);
+
+        assertEquals(1, buffer.sizeUsed());
     }
 
     @Test

@@ -465,6 +465,12 @@ public final class ByteRingBuffer {
 
             Objects.requireNonNull(shorts);
 
+            int available = sizeFree();
+
+            if (length > available) {
+                length = available;
+            }
+
             java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
             bb.asShortBuffer().put(shorts, index, length);
 
@@ -517,6 +523,12 @@ public final class ByteRingBuffer {
             // TODO: This is experimental. Memory usage needs to be improved later.
 
             Objects.requireNonNull(shorts);
+
+            int available = sizeUsed();
+
+            if (length > available) {
+                length = available;
+            }
 
             java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
 
