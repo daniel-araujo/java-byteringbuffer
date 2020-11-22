@@ -526,6 +526,27 @@ public final class ByteRingBuffer {
 
             return read / 2;
         }
+
+        /**
+         * @return How many complete shorts are stored in the buffer.
+         */
+        public final int sizeUsed() {
+            return ByteRingBuffer.this.sizeUsed() / 2;
+        }
+
+        /**
+         * @return How many complete shorts can be stored in the buffer in total.
+         */
+        public final int sizeTotal() {
+            return ByteRingBuffer.this.sizeTotal() / 2;
+        }
+
+        /**
+         * @return How many complete shorts are free in the buffer.
+         */
+        public final int sizeFree() {
+            return ByteRingBuffer.this.sizeFree() / 2;
+        }
     }
 
     /**
