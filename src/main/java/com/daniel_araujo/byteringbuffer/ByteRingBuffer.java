@@ -40,6 +40,20 @@ public final class ByteRingBuffer {
     }
 
     /**
+     * @return How many bytes can be stored in the buffer in total.
+     */
+    public final int sizeTotal() {
+        return buffer.length;
+    }
+
+    /**
+     * @return How many bytes are free in the buffer.
+     */
+    public final int sizeFree() {
+        return sizeTotal() - sizeUsed();
+    }
+
+    /**
      * Adds elements to the end of the buffer.
      *
      * @param bytes
