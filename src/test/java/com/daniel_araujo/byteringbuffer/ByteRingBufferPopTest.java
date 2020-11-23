@@ -64,4 +64,20 @@ public final class ByteRingBufferPopTest {
         assertEquals(2, buffer.peek(result));
         assertArrayEquals(new byte[] { 4, 5 }, result);
     }
+
+    @Test
+    public final void index_placesRemovedElementsAfterIndex() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        byte[] result = new byte[3];
+        assertEquals(2, buffer.pop(result, 1));
+        assertArrayEquals(new byte[] { 0, 1, 2 }, result);
+        assertEquals(1, buffer.sizeUsed());
+
+        byte[] result2 = new byte[1];
+        assertEquals(1, buffer.peek(result2));
+        assertArrayEquals(new byte[] { 3 }, result2);
+    }
 }

@@ -309,6 +309,20 @@ public final class ByteRingBuffer {
      * Moves elements from the buffer to the given array.
      *
      * @param bytes
+     *            The destination array. Its size determines how many elements to remove.
+     * @param index
+     *            Where to begin placing elements in the array.
+     *
+     * @return Number of elements removed.
+     */
+    public final int pop(byte[] bytes, int index) {
+        return pop(bytes, index, bytes.length - index);
+    }
+
+    /**
+     * Moves elements from the buffer to the given array.
+     *
+     * @param bytes
      *            The destination array.
      * @param index
      *            Where to begin placing elements in the array.
