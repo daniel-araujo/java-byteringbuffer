@@ -58,6 +58,8 @@ public final class ByteRingBuffer {
      *
      * @param bytes
      *            Adds entire array to buffer.
+     * 
+     * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
     public final int add(byte[] bytes) {
         Objects.requireNonNull(bytes);
@@ -72,6 +74,8 @@ public final class ByteRingBuffer {
      *            Array that contains elements to be added.
      * @param index
      *            Where to begin extracting elements.
+     * 
+     * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
     public final int add(byte[] bytes, int index) {
         Objects.requireNonNull(bytes);
@@ -88,6 +92,8 @@ public final class ByteRingBuffer {
      *            Where to begin extracting elements.
      * @param length
      *            How many elements to extract.
+     * 
+     * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
     public final int add(byte[] bytes, int index, int length) {
         Objects.requireNonNull(bytes);
@@ -553,11 +559,12 @@ public final class ByteRingBuffer {
             return read / 2;
         }
 
-
         /**
          * Removes elements from the buffer.
          *
-         * @param shorts Array that will contain removed elements. Its length determines how many elements will be removed.
+         * @param shorts
+         *            Array that will contain removed elements. Its length determines how many elements will be removed.
+         * 
          * @return Number of removed elements.
          */
         public final int pop(short[] shorts) {
@@ -567,8 +574,11 @@ public final class ByteRingBuffer {
         /**
          * Removes elements from the buffer.
          *
-         * @param shorts Array that will contain removed elements. Its length determines how many elements will be removed.
-         * @param index Index where elements will be placed.
+         * @param shorts
+         *            Array that will contain removed elements. Its length determines how many elements will be removed.
+         * @param index
+         *            Index where elements will be placed.
+         * 
          * @return Number of removed elements.
          */
         public final int pop(short[] shorts, int index) {
@@ -584,6 +594,7 @@ public final class ByteRingBuffer {
          *            Index where elements will be placed.
          * @param length
          *            How many elements to remove.
+         * 
          * @return
          */
         public final int pop(short[] shorts, int index, int length) {
