@@ -497,6 +497,34 @@ public final class ByteRingBuffer {
             return ByteRingBuffer.this.add(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
         }
 
+        public final void overrunAdd(short[] shorts) {
+            Objects.requireNonNull(shorts);
+
+            overrunAdd(shorts, 0, shorts.length);
+        }
+
+        public final void overrunAdd(short[] shorts, int index) {
+            Objects.requireNonNull(shorts);
+
+            overrunAdd(shorts, index, shorts.length - index);
+        }
+
+        public final void overrunAdd(short[] shorts, int index, int length) {
+            // TODO: This is experimental. Memory usage needs to be improved later.
+
+            Objects.requireNonNull(shorts);
+
+            if (sizeTotal() < 1) {
+                // Just can't do anything.
+                return;
+            }
+
+            java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
+            bb.asShortBuffer().put(shorts, index, length);
+
+            ByteRingBuffer.this.overrunAdd(bb.array(), bb.arrayOffset(), bb.limit());
+        }
+
         /**
          * Retrieves elements from the buffer and places them in a short array.
          *

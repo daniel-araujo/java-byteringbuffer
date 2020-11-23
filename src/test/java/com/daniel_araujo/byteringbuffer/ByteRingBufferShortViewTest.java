@@ -43,6 +43,43 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void overrunAdd_wontAddAnythingIfBufferHasNotEnoughCapacity() {
+        ByteRingBuffer buffer = new ByteRingBuffer(1);
+
+        buffer.shortView().overrunAdd(new short[] { 1 });
+
+        assertEquals(0, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void overrunAdd_overwritesExistingElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.shortView().add(new short[] { 1, 2 });
+        buffer.shortView().overrunAdd(new short[] { 3 });
+
+        assertEquals(4, buffer.sizeUsed());
+
+        short[] result = new short[2];
+        assertEquals(2, buffer.shortView().peek(result));
+        assertArrayEquals(new short[] { 2, 3 }, result);
+    }
+
+    @Test
+    public final void overrunAdd_overwritesBytesWithShorts() {
+        ByteRingBuffer buffer = new ByteRingBuffer(3);
+
+        buffer.add(new byte[] { -128 });
+        buffer.shortView().overrunAdd(new short[] { 1, 2 });
+
+        assertEquals(3, buffer.sizeUsed());
+
+        byte[] result = new byte[3];
+        assertEquals(3, buffer.peek(result));
+        assertArrayEquals(new byte[] { 1, 0, 2 }, result);
+    }
+
+    @Test
     public final void peek_retrievesTwoBytesAsShort() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
