@@ -618,6 +618,22 @@ public final class ByteRingBuffer {
         }
 
         /**
+         * Removes elements from the buffer.
+         *
+         * @param elements
+         *            Number of elements to remove.
+         */
+        public final void drop(int elements) {
+            int available = sizeUsed();
+
+            if (elements > available) {
+                elements = available;
+            }
+
+            ByteRingBuffer.this.drop(elements * 2);
+        }
+
+        /**
          * @return How many complete shorts are stored in the buffer.
          */
         public final int sizeUsed() {

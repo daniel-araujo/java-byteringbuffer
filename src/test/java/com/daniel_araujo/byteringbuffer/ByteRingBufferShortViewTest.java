@@ -123,6 +123,43 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void drop_doesNotRemoveOneByte() {
+        ByteRingBuffer buffer = new ByteRingBuffer(6);
+
+        buffer.add(new byte[] { 1 });
+
+        buffer.shortView().drop(1);
+
+        assertEquals(1, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void drop_removesTwoBytes() {
+        ByteRingBuffer buffer = new ByteRingBuffer(6);
+
+        buffer.add(new byte[] { 1, 2 });
+
+        buffer.shortView().drop(1);
+
+        assertEquals(0, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void drop_removesOnlyEntireShorts() {
+        ByteRingBuffer buffer = new ByteRingBuffer(6);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        buffer.shortView().drop(1);
+
+        assertEquals(1, buffer.sizeUsed());
+
+        byte[] result = new byte[1];
+        assertEquals(1, buffer.peek(result));
+        assertArrayEquals(new byte[] { 3 }, result);
+    }
+
+    @Test
     public final void sizeTotal_returnsHowManyShortsCanBeAddedInTotal() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
