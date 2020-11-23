@@ -539,6 +539,59 @@ public final class ByteRingBuffer {
             return read / 2;
         }
 
+
+        /**
+         * Removes elements from the buffer.
+         *
+         * @param shorts Array that will contain removed elements. Its length determines how many elements will be removed.
+         * @return Number of removed elements.
+         */
+        public final int pop(short[] shorts) {
+            return pop(shorts, 0, shorts.length);
+        }
+
+        /**
+         * Removes elements from the buffer.
+         *
+         * @param shorts Array that will contain removed elements. Its length determines how many elements will be removed.
+         * @param index Index where elements will be placed.
+         * @return Number of removed elements.
+         */
+        public final int pop(short[] shorts, int index) {
+            return pop(shorts, index, shorts.length - index);
+        }
+
+        /**
+         * Removes elements from the buffer.
+         *
+         * @param shorts
+         *            Array that will contain removed elements.
+         * @param index
+         *            Index where elements will be placed.
+         * @param length
+         *            How many elements to remove.
+         * @return
+         */
+        public final int pop(short[] shorts, int index, int length) {
+            // TODO: This is experimental. Memory usage needs to be improved later.
+
+            Objects.requireNonNull(shorts);
+
+            int available = sizeUsed();
+
+            if (length > available) {
+                length = available;
+            }
+
+            java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
+
+            int read = ByteRingBuffer.this.pop(bb.array(), bb.arrayOffset() + bb.position(), bb.limit());
+
+            bb.asShortBuffer().get(shorts, index, length);
+
+            return read / 2;
+        }
+
         /**
          * @return How many complete shorts are stored in the buffer.
          */

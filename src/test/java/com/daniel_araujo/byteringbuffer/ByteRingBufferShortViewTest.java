@@ -68,6 +68,61 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void pop_removesTwoBytesAsShort() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.shortView().add(new short[] { 1 });
+
+        short[] result = new short[1];
+        assertEquals(1, buffer.shortView().pop(result));
+        assertArrayEquals(new short[] { 1 }, result);
+
+        assertEquals(0, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void pop_wontRemoveOneByte() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1 });
+
+        short[] result = new short[1];
+        assertEquals(0, buffer.shortView().pop(result));
+
+        assertEquals("Should not write to array", 0, result[0]);
+
+        assertEquals(1, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void pop_onlyRemovesUpToGivenLength() {
+        ByteRingBuffer buffer = new ByteRingBuffer(8);
+
+        buffer.shortView().add(new short[] { 1, 2, 3, 4 });
+
+        short[] result = new short[2];
+        assertEquals(2, buffer.shortView().pop(result, 0, 2));
+
+        assertArrayEquals(new short[] { 1, 2 }, result);
+
+        assertEquals(4, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void pop_placesElementsAfterGivenIndex() {
+        ByteRingBuffer buffer = new ByteRingBuffer(8);
+
+        buffer.shortView().add(new short[] { 1, 2, 3, 4 });
+
+        short[] result = new short[3];
+        assertEquals(2, buffer.shortView().pop(result, 1, 2));
+
+        assertArrayEquals(new short[] { 0, 1, 2 }, result);
+
+        assertEquals(4, buffer.sizeUsed());
+    }
+
+    @Test
     public final void sizeTotal_returnsHowManyShortsCanBeAddedInTotal() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
