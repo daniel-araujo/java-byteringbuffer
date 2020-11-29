@@ -4,6 +4,31 @@ A ring buffer (or circular buffer) for Java that stores bytes as efficiently as 
 recording and playback.
 
 
+## Installation
+
+Gradle
+
+```
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.daniel-araujo.byteringbuffer:byteringbuffer:2.0.0'
+}
+```
+
+Maven
+
+```
+<dependency>
+    <groupId>com.daniel-araujo.byteringbuffer</groupId>
+    <artifactId>byteringbuffer</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+
 ## Example
 
 ```java
