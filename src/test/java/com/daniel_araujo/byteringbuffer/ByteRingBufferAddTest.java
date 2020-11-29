@@ -43,9 +43,7 @@ public class ByteRingBufferAddTest {
 
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -55,9 +53,7 @@ public class ByteRingBufferAddTest {
         buffer.add(new byte[] { 1, 2, 3 });
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -68,9 +64,7 @@ public class ByteRingBufferAddTest {
         buffer.add(new byte[] { 3 });
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -80,9 +74,7 @@ public class ByteRingBufferAddTest {
         buffer.add(new byte[] { 1, 2 });
         assertEquals(2, buffer.sizeUsed());
 
-        byte[] result = new byte[2];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2 }, result);
+        assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
     }
 
     @Test
@@ -92,9 +84,7 @@ public class ByteRingBufferAddTest {
         buffer.add(new byte[] { 1, 2, 3, 4 });
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -107,9 +97,7 @@ public class ByteRingBufferAddTest {
 
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        assertEquals(3, buffer.peek(result));
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -120,10 +108,7 @@ public class ByteRingBufferAddTest {
 
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -133,9 +118,7 @@ public class ByteRingBufferAddTest {
         assertEquals(2, buffer.add(new byte[] { 1, 2, 3, 4 }, 2));
         assertEquals(2, buffer.sizeUsed());
 
-        byte[] result = new byte[2];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 3, 4 }, result);
+        assertArrayEquals(new byte[] { 3, 4 }, buffer.peek(2));
     }
 
     @Test
@@ -145,9 +128,7 @@ public class ByteRingBufferAddTest {
         buffer.add(new byte[] { 1, 2, 3, 4 }, 1, 2);
         assertEquals(2, buffer.sizeUsed());
 
-        byte[] result = new byte[2];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 2, 3 }, result);
+        assertArrayEquals(new byte[] { 2, 3 }, buffer.peek(2));
     }
 
     @Test
@@ -159,8 +140,6 @@ public class ByteRingBufferAddTest {
 
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 }

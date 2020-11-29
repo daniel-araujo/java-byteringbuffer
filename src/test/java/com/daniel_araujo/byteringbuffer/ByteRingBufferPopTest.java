@@ -80,4 +80,48 @@ public final class ByteRingBufferPopTest {
         assertEquals(1, buffer.peek(result2));
         assertArrayEquals(new byte[] { 3 }, result2);
     }
+
+    @Test
+    public final void length_returnsArrayOfRemovedElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(3));
+    }
+
+    @Test
+    public final void length_returnsEmptyArrayWhenBufferIsEmpty() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        assertArrayEquals(new byte[] {}, buffer.pop(3));
+    }
+
+    @Test
+    public final void length_returnsEmptyArrayWhenLengthIs0() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] {}, buffer.pop(0));
+    }
+
+    @Test
+    public final void length_removesOnlyLengthElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2 }, buffer.pop(2));
+        assertArrayEquals(new byte[] { 3 }, buffer.pop(1));
+    }
+
+    @Test
+    public final void length_returnsLessThanRequestedIfBufferDoesNotHaveEnoughElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(4));
+    }
 }

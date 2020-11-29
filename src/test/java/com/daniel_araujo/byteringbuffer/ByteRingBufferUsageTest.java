@@ -41,9 +41,7 @@ public class ByteRingBufferUsageTest {
 
         buffer.add(new byte[] { 1, 2, 3 });
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
 
     @Test
@@ -52,8 +50,7 @@ public class ByteRingBufferUsageTest {
 
         buffer.add((byte) 1);
 
-        byte[] tmp = new byte[1];
-        buffer.pop(tmp);
+        byte[] tmp = buffer.pop(1);
         byte var = tmp[0];
 
         assertEquals(1, var);
@@ -65,8 +62,24 @@ public class ByteRingBufferUsageTest {
 
         buffer.add(new byte[] { 1, 2, 3 });
 
-        byte[] result = new byte[3];
-        buffer.peek(result);
-        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(3));
+    }
+
+    @Test
+    public final void removeMultipleBytes() {
+        ByteRingBuffer buffer = new ByteRingBuffer(3);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        buffer.drop(2);
+    }
+
+    @Test
+    public final void removeAndRetrieveMultipleBytes() {
+        ByteRingBuffer buffer = new ByteRingBuffer(3);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2 }, buffer.pop(2));
     }
 }

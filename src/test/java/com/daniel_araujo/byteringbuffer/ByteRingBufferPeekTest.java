@@ -165,4 +165,58 @@ public final class ByteRingBufferPeekTest {
         byte[] result = new byte[total];
         assertEquals(total, buffer.peek(result));
     }
+
+    @Test
+    public final void length_returnsArrayOfElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
+    }
+
+    @Test
+    public final void length_returnsEmptyArrayWhenBufferIsEmpty() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        assertArrayEquals(new byte[] {}, buffer.peek(3));
+    }
+
+    @Test
+    public final void length_returnsEmptyArrayWhenLengthIs0() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] {}, buffer.peek(0));
+    }
+
+    @Test
+    public final void length_retrievesOnlyLengthElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
+        assertArrayEquals(new byte[] { 1 }, buffer.peek(1));
+    }
+
+    @Test
+    public final void length_returnsLessThanRequestedIfBufferDoesNotHaveEnoughElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(4));
+    }
+
+    @Test
+    public final void length_doesNotRemoveElements() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.add(new byte[] { 1, 2, 3 });
+
+        assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
+        assertArrayEquals(new byte[] { 1 }, buffer.peek(1));
+    }
 }

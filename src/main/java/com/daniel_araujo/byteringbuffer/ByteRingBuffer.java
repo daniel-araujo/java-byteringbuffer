@@ -183,6 +183,28 @@ public final class ByteRingBuffer {
     }
 
     /**
+     * Retrieves elements from the buffer.
+     *
+     * @param length
+     *            How many elements to retrieve.
+     *
+     * @return Array of elements retrieved. Length may be less than requested if buffer doesn't have enough elements.
+     */
+    public final byte[] peek(int length) {
+        int sizeUsed = sizeUsed();
+
+        if (length > sizeUsed) {
+            length = sizeUsed;
+        }
+
+        byte[] bytes = new byte[length];
+
+        peek(bytes);
+
+        return bytes;
+    }
+
+    /**
      * Retrieves elements from the buffer and stores them in another array.
      *
      * @param bytes
@@ -296,6 +318,29 @@ public final class ByteRingBuffer {
             ByteBuffer second = ByteBuffer.wrap(buffer, secondHalfStart, secondHalfSize);
             cb.borrow(second);
         }
+    }
+
+    /**
+     * Removes elements from the buffer and returns them.
+     *
+     * @param length
+     *            How many elements to remove.
+     *
+     * @return Array of removed elements. May not remove the same number of elements as requested if the buffer did not
+     *         have that many to begin with.
+     */
+    public final byte[] pop(int length) {
+        int sizeUsed = sizeUsed();
+
+        if (length > sizeUsed) {
+            length = sizeUsed;
+        }
+
+        byte[] bytes = new byte[length];
+
+        pop(bytes);
+
+        return bytes;
     }
 
     /**
@@ -526,6 +571,29 @@ public final class ByteRingBuffer {
         }
 
         /**
+         * Retrieves elements from the buffer.
+         *
+         * @param length
+         *            How many elements to retrieve.
+         *
+         * @return Array of elements retrieved. Length may be less than requested if buffer doesn't have enough
+         *         elements.
+         */
+        public final short[] peek(int length) {
+            int sizeUsed = sizeUsed();
+
+            if (length > sizeUsed) {
+                length = sizeUsed;
+            }
+
+            short[] shorts = new short[length];
+
+            peek(shorts);
+
+            return shorts;
+        }
+
+        /**
          * Retrieves elements from the buffer and places them in a short array.
          *
          * @param shorts
@@ -585,6 +653,29 @@ public final class ByteRingBuffer {
             bb.asShortBuffer().get(shorts, index, length);
 
             return read / 2;
+        }
+
+        /**
+         * Removes elements from the buffer and returns them.
+         *
+         * @param length
+         *            How many elements to remove.
+         *
+         * @return Array of removed elements. May not remove the same number of elements as requested if the buffer did
+         *         not have that many to begin with.
+         */
+        public final short[] pop(int length) {
+            int sizeUsed = sizeUsed();
+
+            if (length > sizeUsed) {
+                length = sizeUsed;
+            }
+
+            short[] shorts = new short[length];
+
+            pop(shorts);
+
+            return shorts;
         }
 
         /**

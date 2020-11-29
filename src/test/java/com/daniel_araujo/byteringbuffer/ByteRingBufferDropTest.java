@@ -12,9 +12,7 @@ public final class ByteRingBufferDropTest {
         buffer.drop(1);
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        assertEquals(3, buffer.peek(result));
-        assertArrayEquals(new byte[] { 2, 3, 4 }, result);
+        assertArrayEquals(new byte[] { 2, 3, 4 }, buffer.peek(3));
     }
 
     @Test
@@ -25,8 +23,7 @@ public final class ByteRingBufferDropTest {
         buffer.drop(4);
         assertEquals(0, buffer.sizeUsed());
 
-        byte[] result = new byte[4];
-        assertEquals(0, buffer.peek(result));
+        assertArrayEquals(new byte[] {}, buffer.peek(4));
     }
 
     @Test
@@ -37,9 +34,7 @@ public final class ByteRingBufferDropTest {
         buffer.drop(2);
         assertEquals(2, buffer.sizeUsed());
 
-        byte[] result = new byte[2];
-        assertEquals(2, buffer.peek(result));
-        assertArrayEquals(new byte[] { 5, 6 }, result);
+        assertArrayEquals(new byte[] { 5, 6 }, buffer.peek(2));
     }
 
     @Test

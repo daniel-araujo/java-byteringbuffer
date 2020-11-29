@@ -51,9 +51,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(3, buffer.shortView().sizeUsed());
 
-        short[] result = new short[3];
-        buffer.shortView().peek(result);
-        assertArrayEquals(new short[] { 1, 2, 3 }, result);
+        assertArrayEquals(new short[] { 1, 2, 3 }, buffer.shortView().peek(3));
     }
 
     @Test
@@ -74,9 +72,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(4, buffer.sizeUsed());
 
-        short[] result = new short[2];
-        assertEquals(2, buffer.shortView().peek(result));
-        assertArrayEquals(new short[] { 2, 3 }, result);
+        assertArrayEquals(new short[] { 2, 3 }, buffer.shortView().peek(2));
     }
 
     @Test
@@ -88,9 +84,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(3, buffer.sizeUsed());
 
-        byte[] result = new byte[3];
-        assertEquals(3, buffer.peek(result));
-        assertArrayEquals(new byte[] { 1, 0, 2 }, result);
+        assertArrayEquals(new byte[] { 1, 0, 2 }, buffer.peek(3));
     }
 
     @Test
@@ -102,9 +96,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(2, buffer.shortView().sizeUsed());
 
-        short[] result = new short[2];
-        buffer.shortView().peek(result);
-        assertArrayEquals(new short[] { 2, 3 }, result);
+        assertArrayEquals(new short[] { 2, 3 }, buffer.shortView().peek(2));
     }
 
     @Test
@@ -113,9 +105,7 @@ public class ByteRingBufferShortViewTest {
 
         buffer.shortView().add(new short[] { 1 });
 
-        short[] result = new short[1];
-        assertEquals(1, buffer.shortView().peek(result));
-        assertArrayEquals(new short[] { 1 }, result);
+        assertArrayEquals(new short[] { 1 }, buffer.shortView().peek(2));
     }
 
     @Test
@@ -130,6 +120,16 @@ public class ByteRingBufferShortViewTest {
         assertEquals("Should not write to array", 0, result[0]);
 
         assertEquals(1, buffer.sizeUsed());
+    }
+
+    @Test
+    public final void peek_length_returnsArrayOfCompleteShorts() {
+        ByteRingBuffer buffer = new ByteRingBuffer(5);
+
+        buffer.shortView().add(new short[] { 1, 2 });
+        buffer.add(new byte[] { 1 });
+
+        assertArrayEquals(new short[] { 1, 2 }, buffer.shortView().peek(3));
     }
 
     @Test
@@ -188,6 +188,16 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void pop_length_returnsArrayOfRemovedCompleteShorts() {
+        ByteRingBuffer buffer = new ByteRingBuffer(5);
+
+        buffer.shortView().add(new short[] { 1, 2 });
+        buffer.add(new byte[] { 1 });
+
+        assertArrayEquals(new short[] { 1, 2 }, buffer.shortView().pop(3));
+    }
+
+    @Test
     public final void drop_doesNotRemoveOneByte() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
@@ -219,9 +229,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(1, buffer.sizeUsed());
 
-        byte[] result = new byte[1];
-        assertEquals(1, buffer.peek(result));
-        assertArrayEquals(new byte[] { 3 }, result);
+        assertArrayEquals(new byte[] { 3 }, buffer.peek(1));
     }
 
     @Test
