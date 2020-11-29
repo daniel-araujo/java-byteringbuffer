@@ -43,6 +43,20 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
+    public final void add_varargsSupport() {
+        ByteRingBuffer buffer = new ByteRingBuffer(6);
+
+        assertEquals(1, buffer.shortView().add((short) 1));
+        assertEquals(2, buffer.shortView().add((short) 2, (short) 3));
+
+        assertEquals(3, buffer.shortView().sizeUsed());
+
+        short[] result = new short[3];
+        buffer.shortView().peek(result);
+        assertArrayEquals(new short[] { 1, 2, 3 }, result);
+    }
+
+    @Test
     public final void overrunAdd_wontAddAnythingIfBufferHasNotEnoughCapacity() {
         ByteRingBuffer buffer = new ByteRingBuffer(1);
 
@@ -77,6 +91,20 @@ public class ByteRingBufferShortViewTest {
         byte[] result = new byte[3];
         assertEquals(3, buffer.peek(result));
         assertArrayEquals(new byte[] { 1, 0, 2 }, result);
+    }
+
+    @Test
+    public final void overrunAdd_varargsSupport() {
+        ByteRingBuffer buffer = new ByteRingBuffer(4);
+
+        buffer.shortView().overrunAdd((short) 1);
+        buffer.shortView().overrunAdd((short) 2, (short) 3);
+
+        assertEquals(2, buffer.shortView().sizeUsed());
+
+        short[] result = new short[2];
+        buffer.shortView().peek(result);
+        assertArrayEquals(new short[] { 2, 3 }, result);
     }
 
     @Test

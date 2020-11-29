@@ -149,4 +149,18 @@ public class ByteRingBufferAddTest {
         buffer.peek(result);
         assertArrayEquals(new byte[] { 2, 3 }, result);
     }
+
+    @Test
+    public final void varargsSupport() {
+        ByteRingBuffer buffer = new ByteRingBuffer(3);
+
+        assertEquals(1, buffer.add((byte) 1));
+        assertEquals(2, buffer.add((byte) 2, (byte) 3));
+
+        assertEquals(3, buffer.sizeUsed());
+
+        byte[] result = new byte[3];
+        buffer.peek(result);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, result);
+    }
 }

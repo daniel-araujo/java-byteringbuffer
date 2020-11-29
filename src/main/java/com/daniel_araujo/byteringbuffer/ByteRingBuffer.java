@@ -58,10 +58,10 @@ public final class ByteRingBuffer {
      *
      * @param bytes
      *            Adds entire array to buffer.
-     * 
+     *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
-    public final int add(byte[] bytes) {
+    public final int add(byte... bytes) {
         Objects.requireNonNull(bytes);
 
         return add(bytes, 0, bytes.length);
@@ -74,7 +74,7 @@ public final class ByteRingBuffer {
      *            Array that contains elements to be added.
      * @param index
      *            Where to begin extracting elements.
-     * 
+     *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
     public final int add(byte[] bytes, int index) {
@@ -92,7 +92,7 @@ public final class ByteRingBuffer {
      *            Where to begin extracting elements.
      * @param length
      *            How many elements to extract.
-     * 
+     *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
     public final int add(byte[] bytes, int index, int length) {
@@ -129,7 +129,7 @@ public final class ByteRingBuffer {
      * @param bytes
      *            Adds entire array to buffer.
      */
-    public final void overrunAdd(byte[] bytes) {
+    public final void overrunAdd(byte... bytes) {
         Objects.requireNonNull(bytes);
 
         overrunAdd(bytes, 0, bytes.length);
@@ -187,7 +187,7 @@ public final class ByteRingBuffer {
      *
      * @param bytes
      *            Where elements will be stored. The size of the array indicates how many elements will be retrieved.
-     * 
+     *
      * @return Number of elements that were copied.
      */
     public final int peek(byte[] bytes) {
@@ -205,7 +205,7 @@ public final class ByteRingBuffer {
      *            Where to start placing elements in the given array.
      * @param length
      *            How many elements to copy.
-     * 
+     *
      * @return Number of elements that were copied.
      */
     public final int peek(byte[] bytes, int index, int length) {
@@ -266,7 +266,7 @@ public final class ByteRingBuffer {
      *            Destination.
      * @param length
      *            How many elements to retrieve.
-     * 
+     *
      * @return Number of elements placed into the given ByteBuffer object.
      */
     public final int peek(ByteBuffer byteBuffer, int length) {
@@ -300,10 +300,10 @@ public final class ByteRingBuffer {
 
     /**
      * Moves elements from the buffer to the given array.
-     * 
+     *
      * @param bytes
      *            The destination array. Its size determines how many elements to remove.
-     * 
+     *
      * @return Number of elements removed. It may be less than the size of the given array if the buffer does not have
      *         enough elements to fill the array.
      */
@@ -334,7 +334,7 @@ public final class ByteRingBuffer {
      *            Where to begin placing elements in the array.
      * @param length
      *            How many elements to remove.
-     * 
+     *
      * @return Number of elements removed. It may be less than the size of the provided length if the buffer does not
      *         have enough elements to fill the array.
      */
@@ -379,10 +379,10 @@ public final class ByteRingBuffer {
 
     /**
      * Checks if its possible to access the given number of bytes without passing the end of the buffer.
-     * 
+     *
      * @param size
      *            Number of elements.
-     * 
+     *
      * @return
      */
     private final boolean overflows(int size) {
@@ -418,7 +418,7 @@ public final class ByteRingBuffer {
     /**
      * @param offset
      *            Position in the buffer.
-     * 
+     *
      * @return How many bytes are free after the given position up to end the of the array or the start position,
      *         whichever comes first.
      */
@@ -443,10 +443,10 @@ public final class ByteRingBuffer {
          *
          * @param shorts
          *            Array that contains elements to be added. Will attempt to add them all.
-         * 
+         *
          * @return How many elements were added.
          */
-        public final int add(short[] shorts) {
+        public final int add(short... shorts) {
             Objects.requireNonNull(shorts);
 
             return add(shorts, 0, shorts.length);
@@ -459,7 +459,7 @@ public final class ByteRingBuffer {
          *            Array that contains elements to be added.
          * @param index
          *            Where to start copying elements from the array.
-         * 
+         *
          * @return How many elements were added.
          */
         public final int add(short[] shorts, int index) {
@@ -477,7 +477,7 @@ public final class ByteRingBuffer {
          *            Where to start copying elements from the array.
          * @param length
          *            How many elements to copy.
-         * 
+         *
          * @return How many elements were added.
          */
         public final int add(short[] shorts, int index, int length) {
@@ -497,7 +497,7 @@ public final class ByteRingBuffer {
             return ByteRingBuffer.this.add(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
         }
 
-        public final void overrunAdd(short[] shorts) {
+        public final void overrunAdd(short... shorts) {
             Objects.requireNonNull(shorts);
 
             overrunAdd(shorts, 0, shorts.length);
@@ -530,7 +530,7 @@ public final class ByteRingBuffer {
          *
          * @param shorts
          *            Array of shorts. Will try to fill array.
-         * 
+         *
          * @return How many elements were retrieved.
          */
         public final int peek(short[] shorts) {
@@ -546,7 +546,7 @@ public final class ByteRingBuffer {
          *            Array of shorts. Will try to fill array.
          * @param index
          *            Index where elements will be placed.
-         * 
+         *
          * @return How many elements were retrieved.
          */
         public final int peek(short[] shorts, int index) {
@@ -564,7 +564,7 @@ public final class ByteRingBuffer {
          *            Index where elements will be placed.
          * @param length
          *            How many elements to retrieve.
-         * 
+         *
          * @return How many elements were retrieved.
          */
         public final int peek(short[] shorts, int index, int length) {
@@ -592,7 +592,7 @@ public final class ByteRingBuffer {
          *
          * @param shorts
          *            Array that will contain removed elements. Its length determines how many elements will be removed.
-         * 
+         *
          * @return Number of removed elements.
          */
         public final int pop(short[] shorts) {
@@ -606,7 +606,7 @@ public final class ByteRingBuffer {
          *            Array that will contain removed elements. Its length determines how many elements will be removed.
          * @param index
          *            Index where elements will be placed.
-         * 
+         *
          * @return Number of removed elements.
          */
         public final int pop(short[] shorts, int index) {
@@ -622,7 +622,7 @@ public final class ByteRingBuffer {
          *            Index where elements will be placed.
          * @param length
          *            How many elements to remove.
-         * 
+         *
          * @return
          */
         public final int pop(short[] shorts, int index, int length) {
@@ -690,7 +690,7 @@ public final class ByteRingBuffer {
         /**
          * Receives a chunk of elements. This method can be called several times. You are not allowed to modify the
          * buffer.
-         * 
+         *
          * @param chunk
          *            A chunk of elements. You can only use this object while the method is running.
          */
