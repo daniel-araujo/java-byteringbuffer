@@ -8,10 +8,10 @@ public final class ByteRingBufferClearTest {
     public final void putsBufferInInitialState() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5, 6 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5, 6 });
         buffer.clear();
         assertEquals(0, buffer.sizeUsed());
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4 });
 
         PeekCallbackTracker peekCallback = new PeekCallbackTracker();
         buffer.peek(peekCallback);

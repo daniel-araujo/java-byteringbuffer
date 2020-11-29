@@ -61,10 +61,10 @@ public final class ByteRingBuffer {
      *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
-    public final int add(byte... bytes) {
+    public final int push(byte... bytes) {
         Objects.requireNonNull(bytes);
 
-        return add(bytes, 0, bytes.length);
+        return push(bytes, 0, bytes.length);
     }
 
     /**
@@ -77,10 +77,10 @@ public final class ByteRingBuffer {
      *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
-    public final int add(byte[] bytes, int index) {
+    public final int push(byte[] bytes, int index) {
         Objects.requireNonNull(bytes);
 
-        return add(bytes, index, bytes.length - index);
+        return push(bytes, index, bytes.length - index);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class ByteRingBuffer {
      *
      * @return Number of bytes added. It may not insert every element when the buffer has not enough free space.
      */
-    public final int add(byte[] bytes, int index, int length) {
+    public final int push(byte[] bytes, int index, int length) {
         Objects.requireNonNull(bytes);
 
         int bytesRemaining = length;
@@ -123,20 +123,20 @@ public final class ByteRingBuffer {
     }
 
     /**
-     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * This version of the push method will overrun. This means that if the buffer is full then the oldest elements will
      * be overwritten by the newest ones.
      *
      * @param bytes
      *            Adds entire array to buffer.
      */
-    public final void overrunAdd(byte... bytes) {
+    public final void overrunPush(byte... bytes) {
         Objects.requireNonNull(bytes);
 
-        overrunAdd(bytes, 0, bytes.length);
+        overrunPush(bytes, 0, bytes.length);
     }
 
     /**
-     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * This version of the push method will overrun. This means that if the buffer is full then the oldest elements will
      * be overwritten by the newest ones.
      *
      * @param bytes
@@ -144,14 +144,14 @@ public final class ByteRingBuffer {
      * @param index
      *            Where to begin extracting elements.
      */
-    public final void overrunAdd(byte[] bytes, int index) {
+    public final void overrunPush(byte[] bytes, int index) {
         Objects.requireNonNull(bytes);
 
-        overrunAdd(bytes, index, bytes.length - index);
+        overrunPush(bytes, index, bytes.length - index);
     }
 
     /**
-     * This version of the add method will overrun. This means that if the buffer is full then the oldest elements will
+     * This version of the push method will overrun. This means that if the buffer is full then the oldest elements will
      * be overwritten by the newest ones.
      *
      * @param bytes
@@ -161,7 +161,7 @@ public final class ByteRingBuffer {
      * @param length
      *            How many elements to extract.
      */
-    public final void overrunAdd(byte[] bytes, int index, int length) {
+    public final void overrunPush(byte[] bytes, int index, int length) {
         Objects.requireNonNull(bytes);
 
         int bytesRemaining = length;
@@ -491,10 +491,10 @@ public final class ByteRingBuffer {
          *
          * @return How many elements were added.
          */
-        public final int add(short... shorts) {
+        public final int push(short... shorts) {
             Objects.requireNonNull(shorts);
 
-            return add(shorts, 0, shorts.length);
+            return push(shorts, 0, shorts.length);
         }
 
         /**
@@ -507,10 +507,10 @@ public final class ByteRingBuffer {
          *
          * @return How many elements were added.
          */
-        public final int add(short[] shorts, int index) {
+        public final int push(short[] shorts, int index) {
             Objects.requireNonNull(shorts);
 
-            return add(shorts, index, shorts.length - index);
+            return push(shorts, index, shorts.length - index);
         }
 
         /**
@@ -525,7 +525,7 @@ public final class ByteRingBuffer {
          *
          * @return How many elements were added.
          */
-        public final int add(short[] shorts, int index, int length) {
+        public final int push(short[] shorts, int index, int length) {
             // TODO: This is experimental. Memory usage needs to be improved later.
 
             Objects.requireNonNull(shorts);
@@ -539,22 +539,49 @@ public final class ByteRingBuffer {
             java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
             bb.asShortBuffer().put(shorts, index, length);
 
-            return ByteRingBuffer.this.add(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
+            return ByteRingBuffer.this.push(bb.array(), bb.arrayOffset(), bb.limit()) / 2;
         }
 
-        public final void overrunAdd(short... shorts) {
+        /**
+         * This version of the push method will overrun. This means that if the buffer is full then the oldest elements
+         * will be overwritten by the newest ones.
+         *
+         * @param shorts
+         *            Adds entire array to buffer.
+         */
+        public final void overrunPush(short... shorts) {
             Objects.requireNonNull(shorts);
 
-            overrunAdd(shorts, 0, shorts.length);
+            overrunPush(shorts, 0, shorts.length);
         }
 
-        public final void overrunAdd(short[] shorts, int index) {
+        /**
+         * This version of the push method will overrun. This means that if the buffer is full then the oldest elements
+         * will be overwritten by the newest ones.
+         *
+         * @param shorts
+         *            Adds entire array to buffer.
+         * @param index
+         *            Where to begin extracting elements.
+         */
+        public final void overrunPush(short[] shorts, int index) {
             Objects.requireNonNull(shorts);
 
-            overrunAdd(shorts, index, shorts.length - index);
+            overrunPush(shorts, index, shorts.length - index);
         }
 
-        public final void overrunAdd(short[] shorts, int index, int length) {
+        /**
+         * This version of the push method will overrun. This means that if the buffer is full then the oldest elements
+         * will be overwritten by the newest ones.
+         *
+         * @param shorts
+         *            Adds entire array to buffer.
+         * @param index
+         *            Where to begin extracting elements.
+         * @param length
+         *            How many elements to extract.
+         */
+        public final void overrunPush(short[] shorts, int index, int length) {
             // TODO: This is experimental. Memory usage needs to be improved later.
 
             Objects.requireNonNull(shorts);
@@ -567,7 +594,7 @@ public final class ByteRingBuffer {
             java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(length * 2);
             bb.asShortBuffer().put(shorts, index, length);
 
-            ByteRingBuffer.this.overrunAdd(bb.array(), bb.arrayOffset(), bb.limit());
+            ByteRingBuffer.this.overrunPush(bb.array(), bb.arrayOffset(), bb.limit());
         }
 
         /**

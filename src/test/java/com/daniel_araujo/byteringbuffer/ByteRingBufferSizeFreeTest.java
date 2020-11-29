@@ -15,11 +15,11 @@ public class ByteRingBufferSizeFreeTest {
     public final void isDecreasedByEachElementAdded() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2 });
+        buffer.push(new byte[] { 1, 2 });
 
         assertEquals(1, buffer.sizeFree());
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         assertEquals(0, buffer.sizeFree());
     }
@@ -28,7 +28,7 @@ public class ByteRingBufferSizeFreeTest {
     public final void reportsCorrectNumberOfFreeElementsWhenBufferIsPartitioned() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4 });
 
         assertEquals(0, buffer.sizeFree());
 
@@ -40,7 +40,7 @@ public class ByteRingBufferSizeFreeTest {
 
         assertEquals(2, buffer.sizeFree());
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         assertEquals(1, buffer.sizeFree());
     }
@@ -49,7 +49,7 @@ public class ByteRingBufferSizeFreeTest {
     public final void increasesWhenDroppingElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertEquals(0, buffer.sizeFree());
 

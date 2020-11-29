@@ -15,7 +15,7 @@ public class ByteRingBufferSizeTotalTest {
     public final void doesNotChangeAfterAddingElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertEquals(3, buffer.sizeTotal());
     }
@@ -24,7 +24,7 @@ public class ByteRingBufferSizeTotalTest {
     public final void doesNotChangeWhenBufferBecomesPartitioned() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4 });
 
         assertEquals(3, buffer.sizeTotal());
     }
@@ -33,7 +33,7 @@ public class ByteRingBufferSizeTotalTest {
     public final void doesNotChangeWhenDroppingElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         buffer.drop(1);
 

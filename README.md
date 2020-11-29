@@ -35,10 +35,10 @@ Maven
 ByteRingBuffer buffer = new ByteRingBuffer(8000);
 
 // Adds bytes to buffer.
-int added = buffer.add(new byte[] { 1, 2, 3, 4 ... });
+int added = buffer.push(new byte[] { 1, 2, 3, 4 ... });
 
 // Like add but overwrites existing data when buffer becomes full. 
-buffer.overrunAdd(new byte[] { 1, 2, 3, 4 ... });
+buffer.overrunPush(new byte[] { 1, 2, 3, 4 ... });
 
 // Retrieves and removes data from buffer.
 byte[] destination = new byte[10];
@@ -62,10 +62,10 @@ ByteRingBuffer buffer = new ByteRingBuffer(8000);
 ByteRingBuffer.ShortView shortView = buffer.shortView(); 
 
 // Adds shorts to buffer.
-int added = shortView.add(new short[] { 1, 2, 3, 4 ... });
+int added = shortView.push(new short[] { 1, 2, 3, 4 ... });
 
 // Like add but overwrites existing data when buffer becomes full. 
-shortView.overrunAdd(new short[] { 1, 2, 3, 4 ... });
+shortView.overrunPush(new short[] { 1, 2, 3, 4 ... });
 
 // Retrieves and removes data from buffer.
 short[] destination = new short[10];

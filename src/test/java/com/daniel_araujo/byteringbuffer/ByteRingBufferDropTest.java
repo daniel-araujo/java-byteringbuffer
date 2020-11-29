@@ -8,7 +8,7 @@ public final class ByteRingBufferDropTest {
     public final void continuousBuffer_firstElement() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3, 4 });
+        buffer.push(new byte[] { 1, 2, 3, 4 });
         buffer.drop(1);
         assertEquals(3, buffer.sizeUsed());
 
@@ -19,7 +19,7 @@ public final class ByteRingBufferDropTest {
     public final void continuousBuffer_bufferSize() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3, 4 });
+        buffer.push(new byte[] { 1, 2, 3, 4 });
         buffer.drop(4);
         assertEquals(0, buffer.sizeUsed());
 
@@ -30,7 +30,7 @@ public final class ByteRingBufferDropTest {
     public final void partitionedBuffer_allElementsFromFirstPartition() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5, 6 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5, 6 });
         buffer.drop(2);
         assertEquals(2, buffer.sizeUsed());
 
@@ -41,7 +41,7 @@ public final class ByteRingBufferDropTest {
     public final void droppingMoreElementsThanItHasDoesNotCrashOrBreakInternalState() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2 });
+        buffer.push(new byte[] { 1, 2 });
         buffer.drop(3);
         assertEquals(0, buffer.sizeUsed());
     }

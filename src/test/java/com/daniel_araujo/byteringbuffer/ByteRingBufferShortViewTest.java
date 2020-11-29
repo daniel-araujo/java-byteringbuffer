@@ -5,49 +5,49 @@ import org.junit.Test;
 
 public class ByteRingBufferShortViewTest {
     @Test
-    public final void add_addOneShortAsTwoBytes() {
+    public final void push_addOneShortAsTwoBytes() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         assertEquals(2, buffer.sizeUsed());
     }
 
     @Test
-    public final void add_startsAddingFromIndexUpToEndOfArray() {
+    public final void push_startsAddingFromIndexUpToEndOfArray() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        assertEquals(2, buffer.shortView().add(new short[] { 1, 2, 3 }, 1));
+        assertEquals(2, buffer.shortView().push(new short[] { 1, 2, 3 }, 1));
 
         assertEquals(4, buffer.sizeUsed());
     }
 
     @Test
-    public final void add_startsAddingFromIndexUpToGivenLength() {
+    public final void push_startsAddingFromIndexUpToGivenLength() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        assertEquals(2, buffer.shortView().add(new short[] { 1, 2, 3, 4 }, 1, 2));
+        assertEquals(2, buffer.shortView().push(new short[] { 1, 2, 3, 4 }, 1, 2));
 
         assertEquals(4, buffer.sizeUsed());
     }
 
     @Test
-    public final void add_cannotAddIfThereIsOnlyOneByteLeft() {
+    public final void push_cannotAddIfThereIsOnlyOneByteLeft() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         assertEquals(3, buffer.sizeUsed());
     }
 
     @Test
-    public final void add_varargsSupport() {
+    public final void push_varargsSupport() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        assertEquals(1, buffer.shortView().add((short) 1));
-        assertEquals(2, buffer.shortView().add((short) 2, (short) 3));
+        assertEquals(1, buffer.shortView().push((short) 1));
+        assertEquals(2, buffer.shortView().push((short) 2, (short) 3));
 
         assertEquals(3, buffer.shortView().sizeUsed());
 
@@ -55,20 +55,20 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
-    public final void overrunAdd_wontAddAnythingIfBufferHasNotEnoughCapacity() {
+    public final void overrunPush_wontAddAnythingIfBufferHasNotEnoughCapacity() {
         ByteRingBuffer buffer = new ByteRingBuffer(1);
 
-        buffer.shortView().overrunAdd(new short[] { 1 });
+        buffer.shortView().overrunPush(new short[] { 1 });
 
         assertEquals(0, buffer.sizeUsed());
     }
 
     @Test
-    public final void overrunAdd_overwritesExistingElements() {
+    public final void overrunPush_overwritesExistingElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.shortView().add(new short[] { 1, 2 });
-        buffer.shortView().overrunAdd(new short[] { 3 });
+        buffer.shortView().push(new short[] { 1, 2 });
+        buffer.shortView().overrunPush(new short[] { 3 });
 
         assertEquals(4, buffer.sizeUsed());
 
@@ -76,11 +76,11 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
-    public final void overrunAdd_overwritesBytesWithShorts() {
+    public final void overrunPush_overwritesBytesWithShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { -128 });
-        buffer.shortView().overrunAdd(new short[] { 1, 2 });
+        buffer.push(new byte[] { -128 });
+        buffer.shortView().overrunPush(new short[] { 1, 2 });
 
         assertEquals(3, buffer.sizeUsed());
 
@@ -88,11 +88,11 @@ public class ByteRingBufferShortViewTest {
     }
 
     @Test
-    public final void overrunAdd_varargsSupport() {
+    public final void overrunPush_varargsSupport() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.shortView().overrunAdd((short) 1);
-        buffer.shortView().overrunAdd((short) 2, (short) 3);
+        buffer.shortView().overrunPush((short) 1);
+        buffer.shortView().overrunPush((short) 2, (short) 3);
 
         assertEquals(2, buffer.shortView().sizeUsed());
 
@@ -103,7 +103,7 @@ public class ByteRingBufferShortViewTest {
     public final void peek_retrievesTwoBytesAsShort() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         assertArrayEquals(new short[] { 1 }, buffer.shortView().peek(2));
     }
@@ -112,7 +112,7 @@ public class ByteRingBufferShortViewTest {
     public final void peek_retrievesNothingIfThereIsOneByteLeft() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         short[] result = new short[1];
         assertEquals(0, buffer.shortView().peek(result));
@@ -126,8 +126,8 @@ public class ByteRingBufferShortViewTest {
     public final void peek_length_returnsArrayOfCompleteShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(5);
 
-        buffer.shortView().add(new short[] { 1, 2 });
-        buffer.add(new byte[] { 1 });
+        buffer.shortView().push(new short[] { 1, 2 });
+        buffer.push(new byte[] { 1 });
 
         assertArrayEquals(new short[] { 1, 2 }, buffer.shortView().peek(3));
     }
@@ -136,7 +136,7 @@ public class ByteRingBufferShortViewTest {
     public final void pop_removesTwoBytesAsShort() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         short[] result = new short[1];
         assertEquals(1, buffer.shortView().pop(result));
@@ -149,7 +149,7 @@ public class ByteRingBufferShortViewTest {
     public final void pop_wontRemoveOneByte() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         short[] result = new short[1];
         assertEquals(0, buffer.shortView().pop(result));
@@ -163,7 +163,7 @@ public class ByteRingBufferShortViewTest {
     public final void pop_onlyRemovesUpToGivenLength() {
         ByteRingBuffer buffer = new ByteRingBuffer(8);
 
-        buffer.shortView().add(new short[] { 1, 2, 3, 4 });
+        buffer.shortView().push(new short[] { 1, 2, 3, 4 });
 
         short[] result = new short[2];
         assertEquals(2, buffer.shortView().pop(result, 0, 2));
@@ -177,7 +177,7 @@ public class ByteRingBufferShortViewTest {
     public final void pop_placesElementsAfterGivenIndex() {
         ByteRingBuffer buffer = new ByteRingBuffer(8);
 
-        buffer.shortView().add(new short[] { 1, 2, 3, 4 });
+        buffer.shortView().push(new short[] { 1, 2, 3, 4 });
 
         short[] result = new short[3];
         assertEquals(2, buffer.shortView().pop(result, 1, 2));
@@ -191,8 +191,8 @@ public class ByteRingBufferShortViewTest {
     public final void pop_length_returnsArrayOfRemovedCompleteShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(5);
 
-        buffer.shortView().add(new short[] { 1, 2 });
-        buffer.add(new byte[] { 1 });
+        buffer.shortView().push(new short[] { 1, 2 });
+        buffer.push(new byte[] { 1 });
 
         assertArrayEquals(new short[] { 1, 2 }, buffer.shortView().pop(3));
     }
@@ -201,7 +201,7 @@ public class ByteRingBufferShortViewTest {
     public final void drop_doesNotRemoveOneByte() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         buffer.shortView().drop(1);
 
@@ -212,7 +212,7 @@ public class ByteRingBufferShortViewTest {
     public final void drop_removesTwoBytes() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        buffer.add(new byte[] { 1, 2 });
+        buffer.push(new byte[] { 1, 2 });
 
         buffer.shortView().drop(1);
 
@@ -223,7 +223,7 @@ public class ByteRingBufferShortViewTest {
     public final void drop_removesOnlyEntireShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         buffer.shortView().drop(1);
 
@@ -252,7 +252,7 @@ public class ByteRingBufferShortViewTest {
 
         assertEquals(3, buffer.shortView().sizeFree());
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         assertEquals(2, buffer.shortView().sizeFree());
     }
@@ -261,11 +261,11 @@ public class ByteRingBufferShortViewTest {
     public final void sizeFree_onlyCountsCompleteShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         assertEquals(2, buffer.shortView().sizeFree());
 
-        buffer.shortView().add(new short[] { 1 });
+        buffer.shortView().push(new short[] { 1 });
 
         assertEquals(1, buffer.shortView().sizeFree());
     }
@@ -274,11 +274,11 @@ public class ByteRingBufferShortViewTest {
     public final void sizeUsed_onlyCountsCompleteShorts() {
         ByteRingBuffer buffer = new ByteRingBuffer(6);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
 
         assertEquals(0, buffer.shortView().sizeUsed());
 
-        buffer.add(new byte[] { 2 });
+        buffer.push(new byte[] { 2 });
 
         assertEquals(1, buffer.shortView().sizeUsed());
     }

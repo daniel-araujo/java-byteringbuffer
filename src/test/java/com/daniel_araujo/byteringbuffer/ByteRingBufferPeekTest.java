@@ -9,7 +9,7 @@ public final class ByteRingBufferPeekTest {
     public final void bytebuffer_writesStartingFromPositionAndUpToItsCapacity() {
         ByteRingBuffer buffer = new ByteRingBuffer(5);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         assertEquals(3, buffer.sizeUsed());
         ByteBuffer result = ByteBuffer.allocate(3);
         result.position(1);
@@ -22,7 +22,7 @@ public final class ByteRingBufferPeekTest {
     public final void bytebuffer_length_writesStartingFromPositionAndUpToLength() {
         ByteRingBuffer buffer = new ByteRingBuffer(5);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         assertEquals(3, buffer.sizeUsed());
         ByteBuffer result = ByteBuffer.allocate(3);
         result.position(1);
@@ -35,7 +35,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withoutPartition_readEntireBuffer() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         assertEquals(3, buffer.sizeUsed());
         byte[] result = new byte[3];
         assertEquals(3, buffer.peek(result));
@@ -46,7 +46,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withoutPartition_readHalf() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3, 4 });
+        buffer.push(new byte[] { 1, 2, 3, 4 });
         assertEquals(4, buffer.sizeUsed());
         byte[] result = new byte[2];
         assertEquals(2, buffer.peek(result));
@@ -57,7 +57,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withoutPartition_readUpToSizeOfBuffer() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2 });
+        buffer.push(new byte[] { 1, 2 });
         assertEquals(2, buffer.sizeUsed());
         byte[] result = new byte[4];
         assertEquals(2, buffer.peek(result));
@@ -68,7 +68,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withPartition_readEntireBuffer() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5 });
         assertEquals(4, buffer.sizeUsed());
         byte[] result = new byte[4];
         assertEquals(4, buffer.peek(result));
@@ -79,7 +79,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withPartition_readUpToArraySize() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5 });
         assertEquals(4, buffer.sizeUsed());
         byte[] result = new byte[2];
         assertEquals(2, buffer.peek(result));
@@ -101,7 +101,7 @@ public final class ByteRingBufferPeekTest {
     public final void cb_callsFunctionOnceWhenBufferIsContinuous() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         PeekCallbackTracker peekCallback = new PeekCallbackTracker();
         buffer.peek(peekCallback);
@@ -114,7 +114,7 @@ public final class ByteRingBufferPeekTest {
     public final void cb_callsFunctionOnceWhenBufferIsContinuousButDoesNotStartAtIndex0() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         buffer.drop(1);
 
         PeekCallbackTracker peekCallback = new PeekCallbackTracker();
@@ -128,7 +128,7 @@ public final class ByteRingBufferPeekTest {
     public final void cb_callsFunctionTwiceWhenBufferIsPartitioned() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5 });
 
         PeekCallbackTracker peekCallback = new PeekCallbackTracker();
         buffer.peek(peekCallback);
@@ -142,7 +142,7 @@ public final class ByteRingBufferPeekTest {
     public final void noargs_withPartition_firstPartitionIsNotFilled() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         buffer.drop(2);
         assertEquals(1, buffer.sizeUsed());
         byte[] result = new byte[4];
@@ -159,7 +159,7 @@ public final class ByteRingBufferPeekTest {
         ByteRingBuffer buffer = new ByteRingBuffer(total);
 
         for (int var6 = payloadSize * rounds + 1, var5 = 0; var5 < var6; ++var5) {
-            buffer.add(new byte[payloadSize]);
+            buffer.push(new byte[payloadSize]);
         }
 
         byte[] result = new byte[total];
@@ -170,7 +170,7 @@ public final class ByteRingBufferPeekTest {
     public final void length_returnsArrayOfElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
@@ -186,7 +186,7 @@ public final class ByteRingBufferPeekTest {
     public final void length_returnsEmptyArrayWhenLengthIs0() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] {}, buffer.peek(0));
     }
@@ -195,7 +195,7 @@ public final class ByteRingBufferPeekTest {
     public final void length_retrievesOnlyLengthElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
         assertArrayEquals(new byte[] { 1 }, buffer.peek(1));
@@ -205,7 +205,7 @@ public final class ByteRingBufferPeekTest {
     public final void length_returnsLessThanRequestedIfBufferDoesNotHaveEnoughElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(4));
     }
@@ -214,7 +214,7 @@ public final class ByteRingBufferPeekTest {
     public final void length_doesNotRemoveElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2 }, buffer.peek(2));
         assertArrayEquals(new byte[] { 1 }, buffer.peek(1));

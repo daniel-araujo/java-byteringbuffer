@@ -13,7 +13,7 @@ public class ByteRingBufferUsageTest {
 
         byte var = 2;
 
-        buffer.add(var);
+        buffer.push(var);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class ByteRingBufferUsageTest {
         byte var2 = 4;
         byte var3 = 6;
 
-        buffer.add(var1, var2, var3);
+        buffer.push(var1, var2, var3);
     }
 
     @Test
@@ -32,14 +32,14 @@ public class ByteRingBufferUsageTest {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
         // Without the cast the compiler will complain that it "Cannot resolve method 'add(int, byte)'"
-        buffer.add((byte) 1);
+        buffer.push((byte) 1);
     }
 
     @Test
     public final void addMultipleBytesInArray() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.peek(3));
     }
@@ -48,7 +48,7 @@ public class ByteRingBufferUsageTest {
     public final void getSingleByte() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add((byte) 1);
+        buffer.push((byte) 1);
 
         byte[] tmp = buffer.pop(1);
         byte var = tmp[0];
@@ -60,7 +60,7 @@ public class ByteRingBufferUsageTest {
     public final void getMultipleBytesInSingleArray() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(3));
     }
@@ -69,7 +69,7 @@ public class ByteRingBufferUsageTest {
     public final void removeMultipleBytes() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         buffer.drop(2);
     }
@@ -78,7 +78,7 @@ public class ByteRingBufferUsageTest {
     public final void removeAndRetrieveMultipleBytes() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2 }, buffer.pop(2));
     }

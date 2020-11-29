@@ -15,7 +15,7 @@ public class ByteRingBufferSizeUsedTest {
     public final void fullBufferReportsCapacity() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
         assertEquals(3, buffer.sizeUsed());
     }
 
@@ -23,10 +23,10 @@ public class ByteRingBufferSizeUsedTest {
     public final void notFillingBufferWillNotReportTotalSize() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1 });
+        buffer.push(new byte[] { 1 });
         assertEquals(1, buffer.sizeUsed());
 
-        buffer.add(new byte[] { 2 });
+        buffer.push(new byte[] { 2 });
         assertEquals(2, buffer.sizeUsed());
     }
 
@@ -34,8 +34,8 @@ public class ByteRingBufferSizeUsedTest {
     public final void overfillingStillReprtsTotalSize() {
         ByteRingBuffer buffer = new ByteRingBuffer(3);
 
-        buffer.add(new byte[] { 1, 2, 3 });
-        buffer.add(new byte[] { 2 });
+        buffer.push(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 2 });
         assertEquals(3, buffer.sizeUsed());
     }
 }

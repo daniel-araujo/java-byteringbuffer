@@ -8,7 +8,7 @@ public final class ByteRingBufferPopTest {
     public final void givenArrayDefinesHowManyElementsAreRemoved() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4 });
         assertEquals(4, buffer.sizeUsed());
 
         byte[] result = new byte[2];
@@ -25,7 +25,7 @@ public final class ByteRingBufferPopTest {
     public final void continuousBuffer_writesRemovedElementsToGivenArray() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4 });
         assertEquals(4, buffer.sizeUsed());
 
         byte[] result = new byte[4];
@@ -39,7 +39,7 @@ public final class ByteRingBufferPopTest {
     public final void partitionedBuffer_writesRemovedElementsToGivenArray() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5 });
         assertEquals(4, buffer.sizeUsed());
 
         byte[] result = new byte[4];
@@ -53,7 +53,7 @@ public final class ByteRingBufferPopTest {
     public final void partitionedBuffer_readHalfOfContentsInBuffer() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.overrunAdd(new byte[] { 1, 2, 3, 4, 5 });
+        buffer.overrunPush(new byte[] { 1, 2, 3, 4, 5 });
         assertEquals(4, buffer.sizeUsed());
 
         byte[] result = new byte[2];
@@ -69,7 +69,7 @@ public final class ByteRingBufferPopTest {
     public final void index_placesRemovedElementsAfterIndex() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         byte[] result = new byte[3];
         assertEquals(2, buffer.pop(result, 1));
@@ -85,7 +85,7 @@ public final class ByteRingBufferPopTest {
     public final void length_returnsArrayOfRemovedElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(3));
     }
@@ -101,7 +101,7 @@ public final class ByteRingBufferPopTest {
     public final void length_returnsEmptyArrayWhenLengthIs0() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] {}, buffer.pop(0));
     }
@@ -110,7 +110,7 @@ public final class ByteRingBufferPopTest {
     public final void length_removesOnlyLengthElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2 }, buffer.pop(2));
         assertArrayEquals(new byte[] { 3 }, buffer.pop(1));
@@ -120,7 +120,7 @@ public final class ByteRingBufferPopTest {
     public final void length_returnsLessThanRequestedIfBufferDoesNotHaveEnoughElements() {
         ByteRingBuffer buffer = new ByteRingBuffer(4);
 
-        buffer.add(new byte[] { 1, 2, 3 });
+        buffer.push(new byte[] { 1, 2, 3 });
 
         assertArrayEquals(new byte[] { 1, 2, 3 }, buffer.pop(4));
     }
